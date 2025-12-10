@@ -9,7 +9,7 @@ from tqdm import tqdm
 from concurrent.futures import ThreadPoolExecutor
 import webbrowser
 
-save_folder = "C:/Users/oosth/OneDrive/Documenten/SubwayBuilder/saves/pjil"
+save_folder = "..."
 output_name = "evolution"
 fps = 1
 export_gif = True
