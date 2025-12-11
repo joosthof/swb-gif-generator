@@ -36,7 +36,20 @@ Example config:
 
 ```json
 {
-    "save_folder": "C:/Users/YourName/Documents/SubwayBuilder/saves/MyCity",
-    "output_file": "my_city.gif",
-    "threads": 4
+  "save_folder": "C:/Users/YourName/Documents/SubwayBuilder/saves/MyCity",
+  "output_file": "my_city.gif",
+  "fps": 1,
+  "target_res": 2000,
+  "threads": 4,
+  "add_legend": true,
+  "background_color": "#1e1e1e",
+  "export_gif": true,
+  "color_to_name": {
+    "#ffa300": "L",
+    "#ff6319": "J",
+    "#00933c": "W",
+    "#0039a6": "MA"
+  }
 }
+
+
