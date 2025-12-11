@@ -24,10 +24,6 @@ Place both files together in the **same folder** (any folder you like):
 
 Open `config.json` in any text editor (Notepad is fine).
 
-## ⚙️ Step 1 — Configure
-
-Open `config.json` and fill in the fields:
-
 - `save_folder` — folder containing your `.metro` saves  
 - `output_file` — name of the GIF to generate  
 - `fps` — frames per second of the GIF  
