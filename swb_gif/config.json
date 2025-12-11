@@ -1,0 +1,17 @@
+{
+  "save_folder": "Your Save Folder",
+  "output_name": "Name of your GIF",
+  "fps": 1,
+  "target_res": 2000,
+  "threads": 4,
+  "add_legend": true,
+  "background_color": "#1e1e1e",
+  "export_gif": true,
+  "color_to_name": {
+    "#ffa300": "L",
+    "#ff6319": "J",
+    "#00933c": "W",
+    "#0039a6": "MA"
+  }
+}
+
