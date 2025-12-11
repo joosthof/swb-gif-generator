@@ -75,4 +75,4 @@ Example:
 2. Right-click inside the folder → **Open in Terminal**.
 3. Run the following command: `./swb.exe`
 4. The program will print all line colors found in your saves. Add these colors (with line names) to the `color_to_name` section in `config.json`. And edit any other setting you'd like.
-5. When finished, simply **double-click `swb.exe`** to generate the GIF.
+5. When finished, simply **run the command again (`./swb.exe`)** to generate the GIF.
