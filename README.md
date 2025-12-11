@@ -24,13 +24,21 @@ Place both files together in the **same folder** (any folder you like):
 
 Open `config.json` in any text editor (Notepad is fine).
 
-Fill in the following fields:
+## ⚙️ Step 1 — Configure
 
-- `save_folder` — the folder where SubwayBuilder stores your `.metro` saves  
-- `output_file` — name of the GIF that will be created  
-- `threads` — number of threads to use (recommended: 4)
+Open `config.json` and fill in the fields:
 
-Example config:
+- `save_folder` — folder containing your `.metro` saves  
+- `output_file` — name of the GIF to generate  
+- `fps` — frames per second of the GIF  
+- `target_res` — resolution for each frame  
+- `threads` — CPU threads to use  
+- `add_legend` — add a color/name legend to frames  
+- `background_color` — background hex color  
+- `export_gif` — whether to export a GIF  
+- `color_to_name` — map of line colors → line names
+
+Example:
 
 ```json
 {
@@ -49,5 +57,6 @@ Example config:
     "#0039a6": "MA"
   }
 }
+
 
 
