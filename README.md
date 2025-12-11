@@ -4,8 +4,7 @@ Create animated GIFs showing the evolution of your **SubwayBuilder** city — di
 No Python installation required. Just configure, double-click, and enjoy the animation.
 
 ⚠️ **Note:** The `.exe` method is **not compatible with macOS**.  
-If you want to use this tool on macOS, you'll need to install Python and run the source code manually.  
-A tutorial for macOS users will be provided soon!
+If you want to use this tool on macOS, you'll need to install Python and run the source code manually.
 
 ---
 
@@ -76,3 +75,44 @@ Example:
 3. Run the following command: `./swb.exe`
 4. The program will print all line colors found in your saves. Add these colors (with line names) to the `color_to_name` section in `config.json`. And edit any other setting you'd like.
 5. When finished, simply **run the command again (`./swb.exe`)** to generate the GIF.
+
+---
+
+# For MacOS users:
+
+---
+
+## 📦 Step 1 — Install Python
+**Note:** If you already have Python **3.10.6+** installed, you can skip this step.
+
+1. Go to the official Python website: https://www.python.org/downloads/macos/ and download the latest macOS installer (`.pkg`).
+2. Open the downloaded `.pkg` file and follow the installation steps.
+3. After installation, open **Terminal** and verify Python by running: ```bash python3 --version```
+
+---
+
+## ⚙️ Step 2 — Save your games as JSON files
+
+1. Click **Load/Save** in SubwayBuilder.
+2. Click **Export Current Game**.
+3. Choose **Legacy JSON (.json)** and save the file.
+
+---
+
+## 📥 Step 3 — Download the Source Code
+
+1. Download the latest version of the project from https://github.com/joosthof/swb-gif-generator
+2. Extract the downloaded `.zip` file to any folder on your Mac.
+3. Open Terminal and navigate to the extracted project folder: ```bash cd /path/to/SubwayBuilder-GIF-Generator```
+4. Install Python dependencies by running **requirements.txt** with ```pip3 install -r requirements.txt```
+   **Note:** If you get a permission error, run ```pip3 install --user -r requirements.txt``` instead.
+
+---
+
+## 🖥️ Step 4 — Running the Source Code
+1. Open `config.json` in any text editor (Notepad is fine). Then, set the save folder variable to the location of your JSON files.
+2. Open the folder where the source code is located and run open **Terminal**
+3. Run the command ```python extract_colors.py```.
+4. The program will print all line colors found in your saves. Add these colors (with line names) to the `color_to_name` section in `config.json`. And edit any other setting you'd like.
+5. Run the following command: `python swb.py` to generate the GIF
+
