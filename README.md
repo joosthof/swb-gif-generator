@@ -61,5 +61,5 @@ Example:
 
 - Locate the folder in which you have placed you `swb.exe` and `config.json` files and right-click → Open in terminal.
 - Type `./swb.exe` and click Enter.
-- You'll now see it print all the line colors in your save file. Copy them and place them under the variable **color_to_name** in `config.json` along with their corresponding names. (You can now close the terminal)
+- You'll now see it print all the line colors in your save file. Copy them and place them under the variable **color_to_name** in `config.json` along with their corresponding names like shown in the example above. (You can now close the terminal)
 - Now, double-click `swb.exe`
