@@ -24,7 +24,15 @@ Place both files together in the **same folder** (any folder you like):
 
 ---
 
-## ⚙️ Step 1 — Configure
+## ⚙️ Step 1 — Save your games as JSON files
+
+1. Click **Load/Save** in SubwayBuilder.
+2. Click **Export Current Game**.
+3. Choose **Legacy JSON (.json)** and save the file.
+
+---
+
+## ⚙️ Step 2 — Configure
 
 Open `config.json` in any text editor (Notepad is fine). Then, set the save folder variable to the location of your JSON files.
 
@@ -61,7 +69,7 @@ Example:
 
 ---
 
-## ▶️ Step 2 — Run the Program
+## ▶️ Step 3 — Run the Program
 
 1. Open the folder where `swb.exe` and `config.json` are located.
 2. Right-click inside the folder → **Open in Terminal**.
