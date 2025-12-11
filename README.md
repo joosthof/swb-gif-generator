@@ -3,6 +3,10 @@
 Create animated GIFs showing the evolution of your **SubwayBuilder** city — directly from your save files.  
 No Python installation required. Just configure, double-click, and enjoy the animation.
 
+⚠️ **Note:** The `.exe` method is **not compatible with macOS**.  
+If you want to use this tool on macOS, you'll need to install Python and run the source code manually.  
+A tutorial for macOS users will be provided soon!
+
 ---
 
 ## 📦 Download
