@@ -20,8 +20,6 @@ Place both files together in the **same folder** (any folder you like):
 
 ---
 
----
-
 ## ⚙️ Step 1 — Configure
 
 Open `config.json` in any text editor (Notepad is fine).
