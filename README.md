@@ -22,7 +22,7 @@ Place both files together in the **same folder** (any folder you like):
 
 ## ⚙️ Step 1 — Configure
 
-Open `config.json` in any text editor (Notepad is fine).
+Open `config.json` in any text editor (Notepad is fine). Then, set the save folder variable to the location of your JSON files.
 
 - `save_folder` — folder containing your `.metro` saves  
 - `output_file` — name of the GIF to generate  
@@ -53,6 +53,13 @@ Example:
     "#0039a6": "MA"
   }
 }
+```
 
+---
 
+## ⚙️ Step 2 — Run the .exe file
 
+- Locate the folder in which you have placed you `swb.exe` and `config.json` files and right-click → Open in terminal.
+- Type `./swb.exe` and click Enter.
+- You'll now see it print all the line colors in your save file. Copy them and place them under the variable **color_to_name** in `config.json` along with their corresponding names. (You can now close the terminal)
+- Now, double-click `swb.exe`
