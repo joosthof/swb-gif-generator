@@ -57,9 +57,10 @@ Example:
 
 ---
 
-## ⚙️ Step 2 — Run the .exe file
+## ▶️ Step 2 — Run the Program
 
-- Locate the folder in which you have placed you `swb.exe` and `config.json` files and right-click → Open in terminal.
-- Type `./swb.exe` and click Enter.
-- You'll now see it print all the line colors in your save file. Copy them and place them under the variable **color_to_name** in `config.json` along with their corresponding names like shown in the example above. (You can now close the terminal)
-- Now, double-click `swb.exe`
+1. Open the folder where `swb.exe` and `config.json` are located.
+2. Right-click inside the folder → **Open in Terminal**.
+3. Run the following command: `./swb.exe`
+4. The program will print all line colors found in your saves. Add these colors (with names) to the `color_to_name` section in `config.json`.
+5. When finished, simply **double-click `swb.exe`** to generate the GIF.
