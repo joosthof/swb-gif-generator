@@ -26,7 +26,7 @@ jobs:
           pip3 install pyinstaller
 
       - name: Build executable
-        run: pyinstaller --onefile swb.py
+        run: pyinstaller --onefile swb_gif/swb.py
 
       - name: Upload macOS build
         uses: actions/upload-artifact@v4
