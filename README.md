@@ -160,7 +160,7 @@ Example:
 3. Make the executable runnable (first time only): `chmod +x ./swb`
 4. Run the program by typing: `./swb`
 5. The program will print all line colors found in your saves.
-   - Add these colors (with line names) to the color_to_name section in config.json.
+   - Add these colors (with line names) to the `color_to_name` section in `config.json`.
    - Edit any other settings you want (e.g., fps, output_file, target_res).
 6. When finished, run the command again to generate the GIF: `./swb`
 
