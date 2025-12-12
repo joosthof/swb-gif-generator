@@ -1,6 +1,6 @@
 {
-  "save_folder": "C:/Users/oosth/OneDrive/Documenten/SubwayBuilder/saves/MIL",
-  "output_name": "MIL_Progress",
+  "save_folder": "C:/Users/Username/Documenten/SubwayBuilder/saves/COL",
+  "output_name": "COL_Progress",
   "fps": 1,
   "target_res": 2000,
   "threads": 4,
@@ -8,17 +8,11 @@
   "add_legend": true,
   "background_color": "#1e1e1e",
   "export_gif": true,
-  "export_last_png": false,
+  "export_last_png": true,
   "color_to_name": {
-    "#ffa300": "L",
-    "#ff6319": "J",
-    "#00933c": "WA",
-    "#0039a6": "MA",
-    "#00add0": "R",
-    "#662483": "G",
-    "#840b55": "C",
-    "#9F9825": "H",
-    "#699F66": "WK",
-    "#44B394": "B"
+    "#00add0": ["DT", "MP"],
+    "#662483": ["CA"],
+    "#6cbe45": ["W"],
+    "#ff6319": ["F"]
   }
 }

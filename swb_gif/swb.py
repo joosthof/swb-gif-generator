@@ -63,16 +63,30 @@ def add_legend(png, line_colors, color_to_name=COLOR_TO_NAME):
     line_height = 36
     color_box_size = 30
 
-    present_colors = [c.lower() for c in line_colors.values()]
-    ordered_colors = [c for c in global_line_order.keys() if c in present_colors]
+    legend_items = []
+    for line_id, color in line_colors.items():
+        color = color.lower()
+        names = color_to_name.get(color, [f"Line {line_id}"])
+        if not isinstance(names, list):
+            names = [names]
+        for name in names:
+            legend_items.append((color, name))
+
+    seen = set()
+    unique_items = []
+    for item in legend_items:
+        if item not in seen:
+            seen.add(item)
+            unique_items.append(item)
 
     longest_name = max(
-        (color_to_name.get(c, f"Line") for c in ordered_colors),
+        (name for (_, name) in unique_items),
         key=lambda s: draw.textlength(s, font=font)
     )
     name_width = draw.textlength(longest_name, font=font)
+
     box_width = 60 + name_width + 20
-    box_height = line_height * len(ordered_colors) + padding * 2
+    box_height = line_height * len(unique_items) + padding * 2
     radius = 20
 
     x0 = png.width - box_width - 20
@@ -80,16 +94,24 @@ def add_legend(png, line_colors, color_to_name=COLOR_TO_NAME):
     x1 = x0 + box_width
     y1 = y0 + box_height
 
-    draw.rounded_rectangle([x0, y0, x1, y1], fill=(20, 20, 20, 200), radius=radius)
+    draw.rounded_rectangle(
+        [x0, y0, x1, y1],
+        fill=(20, 20, 20, 200),
+        radius=radius
+    )
 
-    for i, color in enumerate(ordered_colors):
+    # Draw legend rows
+    for i, (color, name) in enumerate(unique_items):
         y = y0 + padding + i * line_height
-        draw.rounded_rectangle([x0 + 10, y, x0 + 10 + color_box_size, y + color_box_size],
-                               fill=color, radius=6)
-        label = color_to_name.get(color, f"Line")
-        draw.text((x0 + 20 + color_box_size, y), label, fill="white", font=font)
+        draw.rounded_rectangle(
+            [x0 + 10, y, x0 + 10 + color_box_size, y + color_box_size],
+            fill=color,
+            radius=6
+        )
+        draw.text((x0 + 20 + color_box_size, y), name, fill="white", font=font)
 
     return png.convert("RGB")
+
 
 # --------------------------- LOAD SAVE FILES ---------------------------
 save_files = [
