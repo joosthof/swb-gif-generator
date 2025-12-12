@@ -1,5 +1,5 @@
 {
-  "save_folder": "C:/Users/Username/Documenten/SubwayBuilder/saves/COL",
+  "save_folder": "C:/Users/oosth/OneDrive/Documenten/SubwayBuilder/saves/COL",
   "output_name": "COL_Progress",
   "fps": 1,
   "target_res": 2000,
@@ -10,9 +10,9 @@
   "export_gif": true,
   "export_last_png": true,
   "color_to_name": {
-    "#00add0": ["DT", "MP"],
-    "#662483": ["CA"],
-    "#6cbe45": ["W"],
-    "#ff6319": ["F"]
+    "#00add0": { "names": ["DT", "MP"], "shape": "square" },
+    "#662483": { "names": ["CA"], "shape": "rounded_square" },
+    "#6cbe45": { "names": ["W"], "shape": "circle" },
+    "#ff6319": { "names": ["F"], "shape": "diamond" }
   }
 }

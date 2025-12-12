@@ -9,9 +9,10 @@ from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 from collections import OrderedDict
 from swb_config_script import save_folder, output_name, fps, TARGET_RES, THREADS, add_legend_flag, BACKGROUND_COLOR, export_gif, COLOR_TO_NAME, LINE_WIDTH, export_last_png
-from extract_colors import extract_svg_and_colors, global_line_order
+from extract_colors import extract_svg_and_colors
 
 # --------------------------- HELPERS ---------------------------
+
 def add_background(svg_text, color=BACKGROUND_COLOR):
     """Inject a solid background rect into the SVG."""
     return svg_text.replace(">", f"><rect width='100%' height='100%' fill='{color}'/>", 1)
@@ -36,10 +37,8 @@ def render_task(path):
     svg, line_colors = extract_svg_and_colors(path)
     if not svg:
         return None, {}
-
     svg = add_background(svg, BACKGROUND_COLOR)
     svg = thin_lines(svg, LINE_WIDTH)
-
     try:
         png = svg_to_png(svg, TARGET_RES)
         return png, line_colors
@@ -47,8 +46,27 @@ def render_task(path):
         print(f"SVG error in {os.path.basename(path)}: {e}")
         return None, {}
 
-def add_legend(png, line_colors, color_to_name=COLOR_TO_NAME):
-    if not line_colors:
+# --------------------------- LEGEND ---------------------------
+
+def draw_legend_shape(draw, shape, xy, color, radius=6):
+    x0, y0, x1, y1 = xy
+    if shape == "square":
+        draw.rectangle(xy, fill=color)
+    elif shape == "rounded_square":
+        draw.rounded_rectangle(xy, fill=color, radius=radius)
+    elif shape == "circle":
+        draw.ellipse(xy, fill=color)
+    elif shape == "diamond":
+        cx = (x0 + x1) / 2
+        cy = (y0 + y1) / 2
+        points = [(cx, y0), (x1, cy), (cx, y1), (x0, cy)]
+        draw.polygon(points, fill=color)
+    else:
+        draw.rectangle(xy, fill=color)
+
+def add_legend(png, legend_items):
+    """Draws a legend on the PNG using a dict of (color,name) -> {"color":..., "name":..., "shape":...}."""
+    if not legend_items:
         return png
 
     png = png.convert("RGBA")
@@ -63,30 +81,12 @@ def add_legend(png, line_colors, color_to_name=COLOR_TO_NAME):
     line_height = 36
     color_box_size = 30
 
-    legend_items = []
-    for line_id, color in line_colors.items():
-        color = color.lower()
-        names = color_to_name.get(color, [f"Line {line_id}"])
-        if not isinstance(names, list):
-            names = [names]
-        for name in names:
-            legend_items.append((color, name))
+    legend_list = list(legend_items.values())
 
-    seen = set()
-    unique_items = []
-    for item in legend_items:
-        if item not in seen:
-            seen.add(item)
-            unique_items.append(item)
-
-    longest_name = max(
-        (name for (_, name) in unique_items),
-        key=lambda s: draw.textlength(s, font=font)
-    )
+    longest_name = max((item["name"] for item in legend_list), key=lambda s: draw.textlength(s, font=font))
     name_width = draw.textlength(longest_name, font=font)
-
     box_width = 60 + name_width + 20
-    box_height = line_height * len(unique_items) + padding * 2
+    box_height = line_height * len(legend_list) + padding * 2
     radius = 20
 
     x0 = png.width - box_width - 20
@@ -94,31 +94,18 @@ def add_legend(png, line_colors, color_to_name=COLOR_TO_NAME):
     x1 = x0 + box_width
     y1 = y0 + box_height
 
-    draw.rounded_rectangle(
-        [x0, y0, x1, y1],
-        fill=(20, 20, 20, 200),
-        radius=radius
-    )
+    draw.rounded_rectangle([x0, y0, x1, y1], fill=(20, 20, 20, 200), radius=radius)
 
-    # Draw legend rows
-    for i, (color, name) in enumerate(unique_items):
+    for i, item in enumerate(legend_list):
         y = y0 + padding + i * line_height
-        draw.rounded_rectangle(
-            [x0 + 10, y, x0 + 10 + color_box_size, y + color_box_size],
-            fill=color,
-            radius=6
-        )
-        draw.text((x0 + 20 + color_box_size, y), name, fill="white", font=font)
+        draw_legend_shape(draw, item.get("shape", "square"), [x0 + 10, y, x0 + 10 + color_box_size, y + color_box_size], item["color"])
+        draw.text((x0 + 20 + color_box_size, y), item["name"], fill="white", font=font)
 
     return png.convert("RGB")
 
-
 # --------------------------- LOAD SAVE FILES ---------------------------
-save_files = [
-    os.path.join(save_folder, f)
-    for f in os.listdir(save_folder)
-    if f.lower().endswith(".json")
-]
+
+save_files = [os.path.join(save_folder, f) for f in os.listdir(save_folder) if f.lower().endswith(".json")]
 save_files.sort(key=os.path.getctime)
 
 if not save_files:
@@ -126,6 +113,7 @@ if not save_files:
     exit()
 
 # --------------------------- RENDER ---------------------------
+
 print("Rendering thumbnails...")
 thumbnails = []
 line_info = []
@@ -137,16 +125,27 @@ with ThreadPoolExecutor(max_workers=THREADS) as executor:
             thumbnails.append(png)
             line_info.append(lines)
 
-# --------------------------- ADD LEGEND ---------------------------
+# --------------------------- ADD LEGEND CUMULATIVELY ---------------------------
+
 if add_legend_flag:
+    cumulative_legend = OrderedDict()
     for i in range(len(thumbnails)):
-        thumbnails[i] = add_legend(thumbnails[i], line_info[i])
+        for line_id, color in line_info[i].items():
+            color = color.lower()
+            config_item = COLOR_TO_NAME.get(color, {"names":[f"Line {line_id}"], "shape":"square"})
+            names = config_item["names"]
+            shape = config_item.get("shape", "square")
+            for name in names:
+                key = (color, name)
+                if key not in cumulative_legend:
+                    cumulative_legend[key] = {"color": color, "name": name, "shape": shape}
+        thumbnails[i] = add_legend(thumbnails[i], cumulative_legend)
 
 # --------------------------- EXPORT GIF ---------------------------
+
 if export_gif:
     print("Creating GIF...")
     gif_frames = [im.convert("P", palette=Image.ADAPTIVE) for im in thumbnails]
-
     gif_path = output_name + ".gif"
     gif_frames[0].save(
         gif_path,
@@ -156,10 +155,10 @@ if export_gif:
         loop=0,
         optimize=True
     )
-
     print(f"GIF saved as {gif_path}")
 
 # --------------------------- EXPORT LAST PNG ---------------------------
+
 if export_last_png and thumbnails:
     last_png = thumbnails[-1]
     last_path = output_name + "_LAST.png"

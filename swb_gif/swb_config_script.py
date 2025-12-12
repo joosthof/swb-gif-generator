@@ -20,6 +20,16 @@ THREADS = config.get("threads", 4)
 add_legend_flag = config.get("add_legend", True)
 BACKGROUND_COLOR = config.get("background_color", "#1e1e1e")
 export_gif = config.get("export_gif", True)
-COLOR_TO_NAME = config.get("color_to_name", {})
 LINE_WIDTH = config.get("line_width", 2.5)
 export_last_png = config.get("export_last_png", False)
+
+raw_color_to_name = config.get("color_to_name", {})
+COLOR_TO_NAME = {}
+for color, value in raw_color_to_name.items():
+    if isinstance(value, list):
+        COLOR_TO_NAME[color.lower()] = {"names": value, "shape": "square"}
+    elif isinstance(value, dict):
+        COLOR_TO_NAME[color.lower()] = {
+            "names": value.get("names", [color]),
+            "shape": value.get("shape", "square")
+        }
