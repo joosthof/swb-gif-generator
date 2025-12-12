@@ -8,7 +8,7 @@ from PIL import Image, ImageDraw, ImageFont
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 from collections import OrderedDict
-from swb_config_script import save_folder, output_name, fps, TARGET_RES, THREADS, add_legend_flag, BACKGROUND_COLOR, export_gif, COLOR_TO_NAME
+from swb_config_script import save_folder, output_name, fps, TARGET_RES, THREADS, add_legend_flag, BACKGROUND_COLOR, export_gif, COLOR_TO_NAME, LINE_WIDTH, export_last_png
 from extract_colors import extract_svg_and_colors, global_line_order
 
 # --------------------------- HELPERS ---------------------------
@@ -16,7 +16,7 @@ def add_background(svg_text, color=BACKGROUND_COLOR):
     """Inject a solid background rect into the SVG."""
     return svg_text.replace(">", f"><rect width='100%' height='100%' fill='{color}'/>", 1)
 
-def thin_lines(svg_text, new_width=2.5):
+def thin_lines(svg_text, new_width=LINE_WIDTH):
     return re.sub(r'stroke-width="[\d\.]+"', f'stroke-width="{new_width}"', svg_text)
 
 def svg_to_png(svg_text, size):
@@ -38,7 +38,7 @@ def render_task(path):
         return None, {}
 
     svg = add_background(svg, BACKGROUND_COLOR)
-    svg = thin_lines(svg, 2)
+    svg = thin_lines(svg, LINE_WIDTH)
 
     try:
         png = svg_to_png(svg, TARGET_RES)
@@ -136,3 +136,10 @@ if export_gif:
     )
 
     print(f"GIF saved as {gif_path}")
+
+# --------------------------- EXPORT LAST PNG ---------------------------
+if export_last_png and thumbnails:
+    last_png = thumbnails[-1]
+    last_path = output_name + "_LAST.png"
+    last_png.save(last_path)
+    print(f"Last save exported as {last_path}")
