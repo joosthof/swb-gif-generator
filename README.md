@@ -34,6 +34,7 @@ Place both files together in the **same folder** (any folder you like):
 ## ⚙️ Step 2 — Configure
 
 Open `config.json` in any text editor (Notepad is fine). Then, set the save folder variable to the location of your JSON files.
+**Note:** The path should NOT include single backslashes. Only double backslashes or single forward slashes: ```"C:/Users/YourName/Documents/SubwayBuilder/saves/MyCity"``` or ```"C:\\Users\\YourName\\Documents\\SubwayBuilder\\saves\\MyCity"```
 
 - `save_folder` — folder containing your `.metro` saves  
 - `output_file` — name of the GIF to generate  
@@ -111,8 +112,9 @@ Example:
 
 ## 🖥️ Step 4 — Running the Source Code
 1. Open `config.json` in any text editor (Notepad is fine). Then, set the save folder variable to the location of your JSON files.
-2. Open the folder where the source code is located and run open **Terminal**
-3. Run the command ```python extract_colors.py```.
-4. The program will print all line colors found in your saves. Add these colors (with line names) to the `color_to_name` section in `config.json`. And edit any other setting you'd like.
-5. Run the following command: `python swb.py` to generate the GIF
+   **Note:** The path should NOT include single backslashes. Only double backslashes or single forward slashes: ```"C:/Users/YourName/Documents/SubwayBuilder/saves/MyCity"``` or ```"C:\\Users\\YourName\\Documents\\SubwayBuilder\\saves\\MyCity"```
+3. Open the folder where the source code is located and run open **Terminal**
+4. Run the command ```python extract_colors.py```.
+5. The program will print all line colors found in your saves. Add these colors (with line names) to the `color_to_name` section in `config.json`. And edit any other setting you'd like.
+6. Run the following command: `python swb.py` to generate the GIF
 
