@@ -8,7 +8,8 @@ from PIL import Image, ImageDraw, ImageFont
 from concurrent.futures import ThreadPoolExecutor
 from tqdm import tqdm
 from collections import OrderedDict
-from swb_config_script import save_folder, output_name, fps, TARGET_RES, THREADS, add_legend_flag, BACKGROUND_COLOR, export_gif, COLOR_TO_NAME, LINE_WIDTH, export_last_png
+from swb_config_script import (save_folder, output_name, fps, TARGET_RES, THREADS, add_legend_flag, BACKGROUND_COLOR, export_gif, COLOR_TO_NAME,
+                               LINE_WIDTH, export_last_png, show_stations, output_folder)
 from extract_colors import extract_svg_and_colors
 
 # --------------------------- HELPERS ---------------------------
@@ -146,7 +147,8 @@ if add_legend_flag:
 if export_gif:
     print("Creating GIF...")
     gif_frames = [im.convert("P", palette=Image.ADAPTIVE) for im in thumbnails]
-    gif_path = output_name + ".gif"
+    gif_path = os.path.join(output_folder, output_name + ".gif")
+    os.makedirs(output_folder, exist_ok=True)
     gif_frames[0].save(
         gif_path,
         save_all=True,
@@ -161,6 +163,7 @@ if export_gif:
 
 if export_last_png and thumbnails:
     last_png = thumbnails[-1]
-    last_path = output_name + "_LAST.png"
+    last_path = os.path.join(output_folder, output_name + "_LAST.png")
+    os.makedirs(output_folder, exist_ok=True)
     last_png.save(last_path)
     print(f"Last save exported as {last_path}")

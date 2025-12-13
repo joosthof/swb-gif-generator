@@ -13,6 +13,7 @@ with open(config_path, "r") as f:
     config = json.load(f)
 
 save_folder = config.get("save_folder")
+output_folder = config.get("output_folder")
 output_name = config.get("output_name", "output")
 fps = config.get("fps", 1)
 TARGET_RES = config.get("target_res", 2000)
@@ -22,7 +23,7 @@ BACKGROUND_COLOR = config.get("background_color", "#1e1e1e")
 export_gif = config.get("export_gif", True)
 LINE_WIDTH = config.get("line_width", 2.5)
 export_last_png = config.get("export_last_png", False)
-
+show_stations = config.get("show_stations", True)
 raw_color_to_name = config.get("color_to_name", {})
 COLOR_TO_NAME = {}
 for color, value in raw_color_to_name.items():
