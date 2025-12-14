@@ -7,11 +7,13 @@
   "threads": 4,
   "line_width": 1.75,
   "add_legend": true,
+  "sort_legend": "time",
   "background_color": "#1e1e1e",
   "export_gif": true,
   "export_last_png": true,
   "show_stations": true,
   "show_network_length": true,
+  "unit": "km",
   "show_station_count": true,
   "color_to_name": {
     "#00add0": { "names": ["DT", "MP", "R"], "shape": "square" },
