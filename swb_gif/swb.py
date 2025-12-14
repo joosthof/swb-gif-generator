@@ -176,16 +176,31 @@ with ThreadPoolExecutor(max_workers=THREADS) as executor:
 
 if add_legend_flag:
     cumulative_legend = OrderedDict()
+    next_name_index = {}
+    seen_lines = set()
+
     for i in range(len(thumbnails)):
-        for line_id, color in line_info[i].items():
-            color = color.lower()
-            config_item = COLOR_TO_NAME.get(color, {"names":[f"Line {line_id}"], "shape":"square"})
+        current_lines = line_info[i]
+
+        for line_id, color in current_lines.items():
+            if line_id in seen_lines:
+                continue
+
+            config_item = COLOR_TO_NAME.get(color.lower(), {"names":[f"Line {line_id}"], "shape":"square"})
             names = config_item["names"]
             shape = config_item.get("shape", "square")
-            for name in names:
-                key = (color, name)
+
+            if line_id not in next_name_index:
+                next_name_index[line_id] = 0
+
+            idx = next_name_index[line_id]
+            if idx < len(names):
+                name_to_add = names[idx]
+                key = (line_id, name_to_add)
                 if key not in cumulative_legend:
-                    cumulative_legend[key] = {"color": color, "name": name, "shape": shape}
+                    cumulative_legend[key] = {"color": color.lower(), "name": name_to_add, "shape": shape}
+                    next_name_index[line_id] += 1
+                    seen_lines.add(line_id)
 
         nl = calculate_network_length(save_files[i]) if show_network_length else None
         thumbnails[i] = add_legend(thumbnails[i], cumulative_legend, network_length_km=nl)
