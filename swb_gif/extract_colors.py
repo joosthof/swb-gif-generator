@@ -49,7 +49,7 @@ last_save = max(save_files, key=os.path.getctime)
 svg, line_colors = extract_svg_and_colors(last_save)
 
 if not line_colors:
-    print("No line colors found in the last save.")
+    print("ERROR: No line colors found in the last save.")
 else:
     print(f"Line colors in '{os.path.basename(last_save)}':")
     for line_id, color in line_colors.items():

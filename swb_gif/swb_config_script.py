@@ -24,6 +24,8 @@ export_gif = config.get("export_gif", True)
 LINE_WIDTH = config.get("line_width", 2.5)
 export_last_png = config.get("export_last_png", False)
 show_stations = config.get("show_stations", True)
+show_network_length = config.get("show_network_length", True)
+show_station_count = config.get("show_station_count", True)
 raw_color_to_name = config.get("color_to_name", {})
 COLOR_TO_NAME = {}
 for color, value in raw_color_to_name.items():

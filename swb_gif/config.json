@@ -1,6 +1,6 @@
 {
-  "save_folder": "save_folder",
-  "output_folder": "output_folder",
+  "save_folder": "C:/Users/oosth/OneDrive/Documenten/SubwayBuilder/saves/COL",
+  "output_folder": "C:/Users/oosth/OneDrive/Documenten/School/Data Science",
   "output_name": "COL_Progress",
   "fps": 1,
   "target_res": 2000,
@@ -11,6 +11,8 @@
   "export_gif": true,
   "export_last_png": true,
   "show_stations": true,
+  "show_network_length": true,
+  "show_station_count": true,
   "color_to_name": {
     "#00add0": { "names": ["DT", "MP", "R"], "shape": "square" },
     "#662483": { "names": ["CA"], "shape": "rounded_square" },
