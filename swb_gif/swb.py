@@ -184,25 +184,32 @@ with ThreadPoolExecutor(max_workers=THREADS) as executor:
 
 if add_legend_flag:
     cumulative_legend = OrderedDict()
+    color_counters = {}
 
     for i in range(len(thumbnails)):
         current_lines = line_info[i]
 
-        for line_id, color in current_lines.items():
+        current_color_counts = {}
+        for color in current_lines.values():
             color_lower = color.lower()
-            config_item = COLOR_TO_NAME.get(color_lower, {"names":[f"Line {line_id}"], "shape":"square"})
+            current_color_counts[color_lower] = current_color_counts.get(color_lower, 0) + 1
+
+        for color_lower, count_in_frame in current_color_counts.items():
+            config_item = COLOR_TO_NAME.get(color_lower, {"names": [f"Line"], "shape": "square"})
             names = config_item["names"]
             shape = config_item.get("shape", "square")
+            already_used = color_counters.get(color_lower, 0)
 
-            for name in names:
-                key = (color_lower, name)
+            for idx in range(already_used, min(count_in_frame, len(names))):
+                name_to_use = names[idx]
+                key = (color_lower, name_to_use)
                 if key not in cumulative_legend:
-                    cumulative_legend[key] = {"color": color_lower, "name": name, "shape": shape}
-                    break
+                    cumulative_legend[key] = {"color": color_lower, "name": name_to_use, "shape": shape}
+
+            color_counters[color_lower] = max(already_used, min(count_in_frame, len(names)))
 
         nl = calculate_network_length(save_files[i], unit=unit) if show_network_length else None
 
-        # Load the save file to get station count
         station_count = None
         if show_station_count:
             with open(save_files[i], "r", encoding="utf-8") as f:
