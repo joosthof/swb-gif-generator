@@ -51,19 +51,29 @@ Example:
 
 ```json
 {
-  "save_folder": "C:/Users/YourName/Documents/SubwayBuilder/saves/MyCity",
-  "output_file": "my_city.gif",
+  "save_folder": "/path/to/your/save/folders/",
+  "output_folder": "/output/path/of/your/GIF/",
+  "output_name": "Name of your GIF",
   "fps": 1,
   "target_res": 2000,
   "threads": 4,
+  "line_width": 1.75,
   "add_legend": true,
+  "sort_legend": "time",
   "background_color": "#1e1e1e",
   "export_gif": true,
+  "export_last_png": true,
+  "show_stations": true,
+  "show_network_length": true,
+  "unit": "km",
+  "show_station_count": true,
   "color_to_name": {
-    "#ffa300": "L",
-    "#ff6319": "J",
-    "#00933c": "W",
-    "#0039a6": "MA"
+    "#00add0": { "names": ["P"], "shape": "rounded_square" },
+    "#0039a6": { "names": ["DIA"], "shape": "rounded_square" },
+    "#6cbe45": { "names": ["A"], "shape": "rounded_square" },
+    "#9f9825": { "names": ["CC"], "shape": "circle" },
+    "#fccc0a": { "names": ["LPD"], "shape": "rounded_square" },
+    "#ff6319": { "names": ["L"], "shape": "rounded_square" }
   }
 }
 ```
@@ -130,19 +140,29 @@ Example:
 
 ```json
 {
-  "save_folder": "/Users/YourName/Documents/SubwayBuilder/saves/MyCity",
-  "output_file": "my_city.gif",
+  "save_folder": "/path/to/your/save/folders/",
+  "output_folder": "/output/path/of/your/GIF/",
+  "output_name": "Name of your GIF",
   "fps": 1,
   "target_res": 2000,
   "threads": 4,
+  "line_width": 1.75,
   "add_legend": true,
+  "sort_legend": "time",
   "background_color": "#1e1e1e",
   "export_gif": true,
+  "export_last_png": true,
+  "show_stations": true,
+  "show_network_length": true,
+  "unit": "km",
+  "show_station_count": true,
   "color_to_name": {
-    "#ffa300": "L",
-    "#ff6319": "J",
-    "#00933c": "W",
-    "#0039a6": "MA"
+    "#00add0": { "names": ["P"], "shape": "rounded_square" },
+    "#0039a6": { "names": ["DIA"], "shape": "rounded_square" },
+    "#6cbe45": { "names": ["A"], "shape": "rounded_square" },
+    "#9f9825": { "names": ["CC"], "shape": "circle" },
+    "#fccc0a": { "names": ["LPD"], "shape": "rounded_square" },
+    "#ff6319": { "names": ["L"], "shape": "rounded_square" }
   }
 }
 ```
