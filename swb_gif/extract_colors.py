@@ -54,3 +54,4 @@ else:
     print(f"Line colors in '{os.path.basename(last_save)}':")
     for line_id, color in line_colors.items():
         print(f"  Line {line_id}: {color}")
+print(60 * "-")

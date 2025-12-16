@@ -10,7 +10,7 @@ from tqdm import tqdm
 from geopy.distance import geodesic
 from collections import OrderedDict
 from swb_config_script import (save_folder, output_name, fps, TARGET_RES, THREADS, add_legend_flag, BACKGROUND_COLOR, export_gif, COLOR_TO_NAME,
-                               LINE_WIDTH, export_last_png, show_stations, output_folder, show_network_length, show_station_count, unit)
+                               LINE_WIDTH, export_last_png, show_stations, output_folder, show_network_length, show_station_count, unit, sort_legend)
 from extract_colors import extract_svg_and_colors
 
 # --------------------------- HELPERS ---------------------------
@@ -183,10 +183,14 @@ if not save_files:
 
 for save_file in save_files:
     length_km = calculate_network_length(save_file, unit=unit)
-    print(f"{os.path.basename(save_file)} network length: {length_km:.1f} {unit}")
+    with open(save_file, "r", encoding="utf-8") as f:
+        save_data = json.load(f)
+    station_count = len(save_data.get("data", {}).get("stations", []))
+    print(f"{os.path.basename(save_file)} network length: {length_km:.1f} {unit} with {station_count} stations")
 
 # --------------------------- RENDER ---------------------------
 
+print(60 * "-")
 print("Rendering thumbnails...")
 thumbnails = []
 line_info = []
@@ -203,6 +207,9 @@ with ThreadPoolExecutor(max_workers=THREADS) as executor:
 if add_legend_flag:
     cumulative_legend = OrderedDict()
     color_counters = {}
+
+    # Optional: define a custom shape order
+    shape_order = {"circle": 0, "square": 1, "rounded_square": 2, "diamond": 3}
 
     for i in range(len(thumbnails)):
         current_lines = line_info[i]
@@ -234,7 +241,25 @@ if add_legend_flag:
                 save_data = json.load(f)
             station_count = len(save_data.get("data", {}).get("stations", []))
 
-        thumbnails[i] = add_legend(thumbnails[i], cumulative_legend, network_length_km=nl, station_count=station_count)
+        # --------------------------- SORT LEGEND ---------------------------
+        if sort_legend == "time":
+            sorted_legend = cumulative_legend
+        elif sort_legend == "shape":
+            sorted_legend = OrderedDict(
+                sorted(
+                    cumulative_legend.items(),
+                    key=lambda kv: (shape_order.get(kv[1].get("shape", ""), 99), kv[1].get("name", ""))
+                )
+            )
+        else:
+            sorted_legend = cumulative_legend
+
+        thumbnails[i] = add_legend(
+            thumbnails[i],
+            sorted_legend,
+            network_length_km=nl,
+            station_count=station_count
+        )
 
 # --------------------------- EXPORT GIF ---------------------------
 
