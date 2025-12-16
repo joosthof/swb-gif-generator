@@ -13,14 +13,13 @@ No Python installation required. Just configure, double-click, and enjoy the ani
 
 Go to the latest release:
 
-👉 **https://github.com/joosthof/swb-gif-generator/releases/tag/v0.1.0**
+👉 **https://github.com/joosthof/swb-gif-generator/releases/tag/v0.2.0**
 
 Download these two files:
 
-- `swb.exe`
-- `config.json`
+- `win_executable.zip`
 
-Place both files together in the **same folder** (any folder you like):
+Extract the file to any folder you like:
 
 ---
 
