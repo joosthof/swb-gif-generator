@@ -26,23 +26,36 @@ def calculate_network_length(save_path, unit="km"):
     with open(save_path, "r", encoding="utf-8") as f:
         save = json.load(f)
 
-    total_km = 0.0
-    seen_segments = set()
+    track_divisor = {}
 
     for group in save.get("data", {}).get("trackGroups", []):
-        center = group.get("centerLine", [])
-        if len(center) != 2:
-            continue
+        lanes_type = group.get("trackLanesType", "single")
+        divisor = {
+            "single": 1,
+            "parallel": 2,
+            "quad": 4
+        }.get(lanes_type, 1)
 
-        p1, p2 = tuple(center[0]), tuple(center[1])
-        segment = tuple(sorted([p1, p2]))
+        for tid in group.get("trackIds", []):
+            track_divisor[tid] = divisor
 
-        if segment in seen_segments:
-            continue
+    seen_segments = set()
+    total_km = 0.0
 
-        dist_km = geodesic(p1[::-1], p2[::-1]).km
-        total_km += dist_km
-        seen_segments.add(segment)
+    for track in save.get("data", {}).get("tracks", []):
+        coords = track.get("coords", [])
+        divisor = track_divisor.get(track.get("id"), 1)
+
+        for i in range(len(coords) - 1):
+            p1, p2 = tuple(coords[i]), tuple(coords[i + 1])
+            segment = tuple(sorted([p1, p2]))
+
+            if segment in seen_segments:
+                continue
+
+            dist_km = geodesic(p1[::-1], p2[::-1]).km
+            total_km += dist_km / divisor
+            seen_segments.add(segment)
 
     if unit == "km":
         return total_km
