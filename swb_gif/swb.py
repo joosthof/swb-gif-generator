@@ -23,21 +23,26 @@ def thin_lines(svg_text, new_width=LINE_WIDTH):
     return re.sub(r'stroke-width="[\d\.]+"', f'stroke-width="{new_width}"', svg_text)
 
 def calculate_network_length(save_path, unit="km"):
-    """Calculate total network length from a save file, avoiding double-counted segments."""
     with open(save_path, "r", encoding="utf-8") as f:
         save = json.load(f)
 
+    total_km = 0.0
     seen_segments = set()
-    total_km = 0
 
-    for track in save.get("data", {}).get("tracks", []):
-        coords = track.get("coords", [])
-        for i in range(len(coords)-1):
-            p1, p2 = tuple(coords[i]), tuple(coords[i+1])
-            segment = tuple(sorted([p1, p2]))
-            if segment not in seen_segments:
-                total_km += geodesic(p1[::-1], p2[::-1]).km / 2
-                seen_segments.add(segment)
+    for group in save.get("data", {}).get("trackGroups", []):
+        center = group.get("centerLine", [])
+        if len(center) != 2:
+            continue
+
+        p1, p2 = tuple(center[0]), tuple(center[1])
+        segment = tuple(sorted([p1, p2]))
+
+        if segment in seen_segments:
+            continue
+
+        dist_km = geodesic(p1[::-1], p2[::-1]).km
+        total_km += dist_km
+        seen_segments.add(segment)
 
     if unit == "km":
         return total_km
