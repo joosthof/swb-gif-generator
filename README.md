@@ -41,10 +41,17 @@ Open `config.json` in any text editor (Notepad is fine). Then, set the save fold
 - `output_file` — name of the GIF to generate  
 - `fps` — frames per second of the GIF  
 - `target_res` — resolution for each frame  
-- `threads` — CPU threads to use  
-- `add_legend` — add a color/name legend to frames  
+- `threads` — CPU threads to use
+- `line_width` — Width of the routes in the GIF
+- `add_legend` — add a color/name legend to frames
+- `sort_legend` — Not yet functional!
 - `background_color` — background hex color  
-- `export_gif` — whether to export a GIF  
+- `export_gif` — whether to export a GIF
+- `expor_last_png` — Exports an image of your final network as PNG
+- `show_stations` — Not yet functional!
+- `show_network_length` — Shows total network length of your network as part of the legend
+- `unit` — Unit in which network length is displayed: Miles or Kilometers
+- `show_station_count` — Shows total station count of your network as part of the legend
 - `color_to_name` — map of line colors → line names
 
 Example:
@@ -130,10 +137,17 @@ Open `config.json` in any text editor (TextEdit works fine — use **Plain Text 
 - `output_file` — name of the GIF to generate  
 - `fps` — frames per second of the GIF  
 - `target_res` — resolution for each frame  
-- `threads` — CPU threads to use  
-- `add_legend` — add a color/name legend to frames  
+- `threads` — CPU threads to use
+- `line_width` — Width of the routes in the GIF
+- `add_legend` — add a color/name legend to frames
+- `sort_legend` — Not yet functional!
 - `background_color` — background hex color  
-- `export_gif` — whether to export a GIF  
+- `export_gif` — whether to export a GIF
+- `expor_last_png` — Exports an image of your final network as PNG
+- `show_stations` — Not yet functional!
+- `show_network_length` — Shows total network length of your network as part of the legend
+- `unit` — Unit in which network length is displayed: Miles or Kilometers
+- `show_station_count` — Shows total station count of your network as part of the legend
 - `color_to_name` — map of line colors → line names
 
 Example:
