@@ -208,7 +208,6 @@ if add_legend_flag:
     cumulative_legend = OrderedDict()
     color_counters = {}
 
-    # Optional: define a custom shape order
     shape_order = {"circle": 0, "square": 1, "rounded_square": 2, "diamond": 3}
 
     for i in range(len(thumbnails)):
@@ -249,6 +248,13 @@ if add_legend_flag:
                 sorted(
                     cumulative_legend.items(),
                     key=lambda kv: (shape_order.get(kv[1].get("shape", ""), 99), kv[1].get("name", ""))
+                )
+            )
+        elif sort_legend == "alphabetic":
+            sorted_legend = OrderedDict(
+                sorted(
+                    cumulative_legend.items(),
+                    key=lambda kv: kv[1].get("name", "")
                 )
             )
         else:
