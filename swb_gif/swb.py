@@ -13,6 +13,7 @@ from swb_config_script import (save_folder, output_name, fps, TARGET_RES, THREAD
                                LINE_WIDTH, export_last_png, show_stations, output_folder, show_network_length, show_station_count, unit, sort_legend,
                                show_day)
 from extract_colors import extract_svg_and_colors
+from reportlab.graphics.shapes import PolyLine, Path
 
 # --------------------------- HELPERS ---------------------------
 
@@ -63,31 +64,116 @@ def calculate_network_length(save_path, unit="km"):
     else:
         return total_km * 0.621371
 
-def svg_to_png(svg_text, size):
-    svg_io = BytesIO(svg_text.encode("utf-8"))
-    drawing = svg2rlg(svg_io)
-    scale_x = size / drawing.width
-    scale_y = size / drawing.height
-    drawing.width *= scale_x
-    drawing.height *= scale_y
-    drawing.scale(scale_x, scale_y)
-    png_bytes = BytesIO()
-    renderPM.drawToFile(drawing, png_bytes, fmt="PNG")
-    png_bytes.seek(0)
-    return Image.open(png_bytes).convert("RGBA")
+def extract_svg_points(drawing):
+    points = []
+
+    def walk(node):
+        # PolyLine and Path both expose .points
+        if isinstance(node, (PolyLine, Path)):
+            pts = getattr(node, "points", [])
+            points.extend(zip(pts[0::2], pts[1::2]))
+
+        for child in getattr(node, "contents", []):
+            walk(child)
+
+    walk(drawing)
+    return points
+
+def normalize_stations(stations):
+    xs = [s["x"] for s in stations]
+    ys = [s["y"] for s in stations]
+    min_x, max_x = min(xs), max(xs)
+    min_y, max_y = min(ys), max(ys)
+
+    return [
+        {
+            "nx": (s["x"] - min_x) / (max_x - min_x or 1),
+            "ny": (max_y - s["y"]) / (max_y - min_y or 1)
+        }
+        for s in stations
+    ]
+
+def snap_stations_to_svg(stations, svg_points):
+    xs = [p[0] for p in svg_points]
+    ys = [p[1] for p in svg_points]
+    min_x, max_x = min(xs), max(xs)
+    min_y, max_y = min(ys), max(ys)
+
+    snapped = []
+    for s in stations:
+        px = min_x + s["nx"] * (max_x - min_x)
+        py = min_y + s["ny"] * (max_y - min_y)
+
+        # nearest geometry point
+        x, y = min(
+            svg_points,
+            key=lambda p: (p[0] - px) ** 2 + (p[1] - py) ** 2
+        )
+        snapped.append({"x": x, "y": y})
+
+    return snapped
+
+
+def extract_station_points(save_data):
+    stations = []
+
+    for track in save_data.get("data", {}).get("tracks", []):
+        if track.get("type") == "station":
+            coords = track.get("coords", [])
+            if len(coords) >= 2:
+                (x1, y1), (x2, y2) = coords[:2]
+                stations.append({
+                    "x": (x1 + x2) / 2,
+                    "y": (y1 + y2) / 2
+                })
+
+    return stations
 
 def render_task(path):
     svg, line_colors = extract_svg_and_colors(path)
     if not svg:
         return None, {}
+
     svg = add_background(svg, BACKGROUND_COLOR)
     svg = thin_lines(svg, LINE_WIDTH)
+
     try:
-        png = svg_to_png(svg, TARGET_RES)
+        drawing = svg2rlg(BytesIO(svg.encode("utf-8")))
+
+        scale = TARGET_RES / 600
+        drawing.width *= scale
+        drawing.height *= scale
+        drawing.scale(scale, scale)
+
+        png_path = BytesIO()
+        renderPM.drawToFile(drawing, png_path, fmt="PNG")
+        png_path.seek(0)
+        png = Image.open(png_path).convert("RGBA")
+
+        svg_points = [(x*scale, y*scale) for x, y in extract_svg_points(drawing)]
+
+        with open(path, "r", encoding="utf-8") as f:
+            save_data = json.load(f)
+
+        stations = extract_station_points(save_data)
+        if stations and svg_points:
+            norm = normalize_stations(stations)
+            stations_png = snap_stations_to_svg(norm, svg_points)
+            png = draw_stations(png, stations_png)
+
         return png, line_colors
+
     except Exception as e:
         print(f"SVG error in {os.path.basename(path)}: {e}")
         return None, {}
+
+def draw_stations(png, stations_svg, radius=8, color="#ff0000"):
+    """Draw circles for each station on the PNG."""
+    draw = ImageDraw.Draw(png)
+    for s in stations_svg:
+        x, y = s["x"], s["y"]
+        draw.ellipse([x-radius, y-radius, x+radius, y+radius], fill=color, outline="white", width=2)
+    return png
 
 # --------------------------- LEGEND ---------------------------
 
