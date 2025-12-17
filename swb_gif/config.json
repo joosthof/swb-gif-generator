@@ -15,6 +15,7 @@
   "show_network_length": true,
   "unit": "km",
   "show_station_count": true,
+  "show_day": true,
   "color_to_name": {
     "#00add0": { "names": ["P"], "shape": "rounded_square" },
     "#0039a6": { "names": ["DIA"], "shape": "rounded_square" },

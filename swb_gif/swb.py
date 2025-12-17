@@ -10,7 +10,8 @@ from tqdm import tqdm
 from geopy.distance import geodesic
 from collections import OrderedDict
 from swb_config_script import (save_folder, output_name, fps, TARGET_RES, THREADS, add_legend_flag, BACKGROUND_COLOR, export_gif, COLOR_TO_NAME,
-                               LINE_WIDTH, export_last_png, show_stations, output_folder, show_network_length, show_station_count, unit, sort_legend)
+                               LINE_WIDTH, export_last_png, show_stations, output_folder, show_network_length, show_station_count, unit, sort_legend,
+                               show_day)
 from extract_colors import extract_svg_and_colors
 
 # --------------------------- HELPERS ---------------------------
@@ -155,6 +156,8 @@ def add_legend(png, legend_items, network_length_km=None, station_count=None):
         lines.append(f"{network_length_km:.1f}{unit}")
     if station_count is not None:
         lines.append(f"{station_count} sts.")
+    if show_day:
+        lines.append(f"Day {save_data.get('metadata', {}).get('elapsedSeconds', '?') / (60 * 60 * 24):.0f}")
 
     if lines:
         max_text_width = max(draw.textlength(line, font=font) for line in lines)
@@ -186,6 +189,7 @@ for save_file in save_files:
     with open(save_file, "r", encoding="utf-8") as f:
         save_data = json.load(f)
     station_count = len(save_data.get("data", {}).get("stations", []))
+    stations = save_data.get("data", {}).get("stations", [])
     print(f"{os.path.basename(save_file)} network length: {length_km:.1f} {unit} with {station_count} stations")
 
 # --------------------------- RENDER ---------------------------

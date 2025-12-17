@@ -29,6 +29,7 @@ show_network_length = config.get("show_network_length", True)
 show_station_count = config.get("show_station_count", True)
 unit = config.get("unit")
 raw_color_to_name = config.get("color_to_name", {})
+show_day = config.get("show_day", False)
 COLOR_TO_NAME = {}
 for color, value in raw_color_to_name.items():
     if isinstance(value, list):
