@@ -27,9 +27,9 @@ Extract the file to any folder you like:
 
 1. Click **Load/Save** in SubwayBuilder.
 2. Click **Export Current Game**.
-   > **Note:** It is important to load every save one after another and  **Export Current Game** for each, NOT **Export**. Otherwise, it will not work.
+   > **Note:** It is important to load every save one after another and click **Export Current Game** for each, NOT **Export**. Otherwise, it will not work.
 4. Choose **Legacy JSON (.json)** and save the file.
-> **Note:** Save the `.json` files in a different folder than the `.metro` files!
+   > **Note:** Save the `.json` files in a different folder than the `.metro` files!
 
 ---
 
@@ -123,9 +123,9 @@ Extract `macos-executable.zip` and place both files together in the **same folde
 
 1. Click **Load/Save** in SubwayBuilder.  
 2. Click **Export Current Game**.
-  > **Note:** It is important to load every save one after another and  **Export Current Game** for each, NOT **Export**. Otherwise, it will not work.
+  > **Note:** It is important to load every save one after another and click **Export Current Game** for each, NOT **Export**. Otherwise, it will not work.
 4. Choose **Legacy JSON (.json)** and save the file.
-> **Note:** Save the `.json` files in a different folder than the `.metro` files!
+   > **Note:** Save the `.json` files in a different folder than the `.metro` files!
 
 ---
 
