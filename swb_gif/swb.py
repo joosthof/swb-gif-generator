@@ -113,33 +113,106 @@ def snap_stations_to_svg(stations, svg_points):
 
     return snapped
 
+from collections import OrderedDict
+
+def merge_overlapping_stations(stations, precision=2):
+    merged = OrderedDict()
+
+    for s in stations:
+        key = (round(s["x"], precision), round(s["y"], precision))
+
+        if key not in merged:
+            merged[key] = {
+                "x": s["x"],
+                "y": s["y"],
+                "colors": set(s.get("colors", []))
+            }
+        else:
+            merged[key]["colors"].update(s.get("colors", []))
+
+    result = []
+    for m in merged.values():
+        result.append({
+            "x": m["x"],
+            "y": m["y"],
+            "colors": list(m["colors"])
+        })
+
+    return result
+
+
+
 
 def extract_station_points(save_data):
     stations = []
 
-    for track in save_data.get("data", {}).get("tracks", []):
-        if track.get("type") == "station":
-            coords = track.get("coords", [])
-            if len(coords) >= 2:
-                (x1, y1), (x2, y2) = coords[:2]
-                stations.append({
-                    "x": (x1 + x2) / 2,
-                    "y": (y1 + y2) / 2
-                })
+    for st in save_data.get("data", {}).get("stations", []):
+        coords = st.get("coords")
+        if coords and len(coords) == 2:
+            stations.append({
+                "x": coords[0],  # lon
+                "y": coords[1],  # lat
+                "id": st.get("id"),
+                "name": st.get("name"),
+                "trackIds": st.get("trackIds", [])
+            })
 
     return stations
+
+def assign_station_colors(stations, track_color_map):
+    for s in stations:
+        colors = {
+            track_color_map.get(tid)
+            for tid in s.get("trackIds", [])
+            if tid in track_color_map
+        }
+
+        colors.discard(None)
+
+        if not colors:
+            colors = {"#ffffff"}  # fallback
+
+        # ALWAYS store as list
+        s["colors"] = list(colors)
+
+    return stations
+
+def get_station_color(png, station, sample_radius=2):
+    """
+    Sample the average color around the station's pixel coordinates.
+    """
+    x, y = int(station["x"]), int(station["y"])
+    pixels = []
+
+    for dx in range(-sample_radius, sample_radius + 1):
+        for dy in range(-sample_radius, sample_radius + 1):
+            sx, sy = x + dx, y + dy
+            if 0 <= sx < png.width and 0 <= sy < png.height:
+                pixels.append(png.getpixel((sx, sy)))
+
+    # Filter out white/background pixels
+    pixels = [p for p in pixels if p[:3] != (255, 255, 255)]
+    if not pixels:
+        return "#ffffff"
+
+    # Average the colors
+    r = sum(p[0] for p in pixels) // len(pixels)
+    g = sum(p[1] for p in pixels) // len(pixels)
+    b = sum(p[2] for p in pixels) // len(pixels)
+    return f"#{r:02x}{g:02x}{b:02x}"
 
 def render_task(path):
     svg, line_colors = extract_svg_and_colors(path)
     if not svg:
         return None, {}
 
+    # Inject background & thin lines
     svg = add_background(svg, BACKGROUND_COLOR)
     svg = thin_lines(svg, LINE_WIDTH)
 
     try:
+        # Render SVG
         drawing = svg2rlg(BytesIO(svg.encode("utf-8")))
-
         scale = TARGET_RES / 600
         drawing.width *= scale
         drawing.height *= scale
@@ -150,15 +223,29 @@ def render_task(path):
         png_path.seek(0)
         png = Image.open(png_path).convert("RGBA")
 
+        # Extract path points in scaled pixels
         svg_points = [(x*scale, y*scale) for x, y in extract_svg_points(drawing)]
 
+        # Load save data
         with open(path, "r", encoding="utf-8") as f:
             save_data = json.load(f)
 
+        # Extract stations
         stations = extract_station_points(save_data)
-        if stations and svg_points:
+
+        if stations and svg_points and show_stations:
+            # Normalize & snap to SVG
             norm = normalize_stations(stations)
             stations_png = snap_stations_to_svg(norm, svg_points)
+
+            # Assign colors by sampling rendered PNG
+            for i, s in enumerate(stations_png):
+                s["colors"] = [get_station_color(png, s)]
+            
+            # Merge overlapping stations (colors combined automatically)
+            stations_png = merge_overlapping_stations(stations_png)
+
+            # Draw stations
             png = draw_stations(png, stations_png)
 
         return png, line_colors
@@ -167,12 +254,41 @@ def render_task(path):
         print(f"SVG error in {os.path.basename(path)}: {e}")
         return None, {}
 
-def draw_stations(png, stations_svg, radius=8, color="#ff0000"):
-    """Draw circles for each station on the PNG."""
+def draw_stations(png, stations_svg, radius=5):
     draw = ImageDraw.Draw(png)
+
     for s in stations_svg:
         x, y = s["x"], s["y"]
-        draw.ellipse([x-radius, y-radius, x+radius, y+radius], fill=color, outline="white", width=2)
+        colors = s.get("colors", [])
+
+        if len(colors) == 1:
+            # normal station
+            fill = colors[0]
+            draw.ellipse(
+                [x-radius, y-radius, x+radius, y+radius],
+                fill=fill,
+                outline="white",
+                width=1
+            )
+        else:
+            # transfer station → white fill + colored ring
+            draw.ellipse(
+                [x-radius, y-radius, x+radius, y+radius],
+                fill="#ffffff",
+                outline="black",
+                width=1
+            )
+
+            ring_r = radius + 3
+            for i, c in enumerate(colors):
+                draw.arc(
+                    [x-ring_r, y-ring_r, x+ring_r, y+ring_r],
+                    start=i * (360 / len(colors)),
+                    end=(i + 1) * (360 / len(colors)),
+                    fill=c,
+                    width=4
+                )
+
     return png
 
 # --------------------------- LEGEND ---------------------------

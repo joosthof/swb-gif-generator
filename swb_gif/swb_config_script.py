@@ -30,6 +30,7 @@ show_station_count = config.get("show_station_count", True)
 unit = config.get("unit")
 raw_color_to_name = config.get("color_to_name", {})
 show_day = config.get("show_day", False)
+keep_final_zoom = config.get("keep_final_zoom", True)
 COLOR_TO_NAME = {}
 for color, value in raw_color_to_name.items():
     if isinstance(value, list):
